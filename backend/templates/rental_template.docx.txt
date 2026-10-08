@@ -1,0 +1,11 @@
+[Save this file as rental_template.docx in the templates/ folder]
+Rental Agreement Template
+-------------------------
+Landlord: {{ landlord }}
+Tenant: {{ tenant }}
+Start Date: {{ start_date }}
+Rent: {{ rent }}
+Term: {{ term }}
+Governing law: {{ governing_law }}
+
+[Replace with a proper .docx in Word and keep placeholders like {{ landlord }}]

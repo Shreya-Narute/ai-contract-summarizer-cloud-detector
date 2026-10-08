@@ -25,6 +25,9 @@ venv/
 backend/uploads/
 backend/generated/
 
+# ── Root templates/ is a duplicate of backend/templates/ — only backend/ is needed ──
+/templates/
+
 # ── OS ───────────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db

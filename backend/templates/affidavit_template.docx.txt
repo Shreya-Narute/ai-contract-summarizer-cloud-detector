@@ -1,0 +1,6 @@
+[Save this file as affidavit_template.docx in the templates/ folder]
+Affidavit Template
+------------------
+Deponent: {{ deponent }}
+Statement: {{ statement }}
+Date: {{ date }}
