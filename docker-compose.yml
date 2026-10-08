@@ -1,0 +1,83 @@
+services:
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ai_contract
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  minio:
+    image: minio/minio:latest
+    # --console-address fixes the random-port warning introduced in MinIO 2022+
+    command: server /data --console-address :9001
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - miniodata:/data
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql://app:password@postgres:5432/ai_contract
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+      JWT_SECRET: "change_this_to_strong_secret"
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - postgres
+      - minio
+      - redis
+    volumes:
+      - uploads_data:/app/uploads
+      - generated_data:/app/generated
+    ports:
+      - "8000:8000"
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  celery_worker:
+    build: ./backend
+    # Point -A at the tasks module so run_analysis is registered on startup.
+    # celery_worker.py no longer self-imports celery_tasks, so this is required.
+    command: celery -A app.celery_tasks worker --loglevel=info
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      DATABASE_URL: postgresql://app:password@postgres:5432/ai_contract
+      JWT_SECRET: "change_this_to_strong_secret"
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - uploads_data:/app/uploads
+      - generated_data:/app/generated
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Leave empty locally — api.ts falls back to http://localhost:8000.
+        # For production set: REACT_APP_API_URL=https://your-backend-url
+        REACT_APP_API_URL: ""
+    ports:
+      - "3000:80"   # nginx listens on 80 inside container; map to 3000 locally
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+  miniodata:
+  uploads_data:
+  generated_data:
