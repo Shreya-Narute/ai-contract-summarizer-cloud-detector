@@ -1,24 +1,37 @@
-# Node
+# ── Environment / Secrets ────────────────────────────────────────────────────
+# Never commit .env files — they contain passwords and secrets.
+.env
+.env.*
+!.env.example
+
+# ── Node ─────────────────────────────────────────────────────────────────────
 frontend/node_modules/
 frontend/build/
 
-# Python
+# ── Python ───────────────────────────────────────────────────────────────────
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
 *.egg-info/
-.env
+*.egg
+dist/
+build/
+.venv/
+venv/
 
-# Docker volumes (local data)
+# ── Docker volumes (local runtime data) ──────────────────────────────────────
 backend/uploads/
 backend/generated/
 
-# OS
+# ── OS ───────────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# IDE
+# ── IDE ───────────────────────────────────────────────────────────────────────
 .vscode/
 .idea/
+*.swp
+*.swo
