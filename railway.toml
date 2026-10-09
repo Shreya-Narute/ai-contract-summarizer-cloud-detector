@@ -1,0 +1,18 @@
+# Railway deployment configuration
+# Each service in the Railway dashboard should point to this repo
+# and override the build/start settings as described below.
+#
+# SERVICE: backend
+#   Root Directory: backend
+#   Dockerfile: Dockerfile
+#   Start Command: (use Dockerfile CMD)
+#
+# SERVICE: celery-worker
+#   Root Directory: backend
+#   Dockerfile: Dockerfile
+#   Start Command: celery -A app.celery_tasks worker --loglevel=info
+#
+# SERVICE: frontend
+#   Root Directory: frontend
+#   Dockerfile: Dockerfile
+#   Build Arg: REACT_APP_API_URL=https://<backend-service-url>
